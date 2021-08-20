@@ -1,4 +1,0 @@
-commands.leangle.usage=/leangle
-
-commands.leangle.test.usage=/leangle <entity>
-commands.leangle.test.entity.usage=/leangle entity <dropTile|dropChest|dropBlock>

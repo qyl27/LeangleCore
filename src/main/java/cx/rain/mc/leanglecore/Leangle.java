@@ -1,77 +1,47 @@
 package cx.rain.mc.leanglecore;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cx.rain.mc.leanglecore.proxy.LeangleCommon;
-import cx.rain.mc.leanglecore.test.LeangleTest;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = Leangle.MODID, name = Leangle.NAME, version = Leangle.VERSION,
-        acceptedMinecraftVersions = Leangle.MC_VERSION)
+@Mod(Leangle.MODID)
 public class Leangle {
     public static final String MODID = "leanglecore";
     public static final String NAME = "Leangle Core";
-    public static final String VERSION = "1.7.10-1.0.0";
-    public static final String MC_VERSION = "1.7.10";
+    public static final String VERSION = "1.16.4-1.0.0";
+    public static final String MC_VERSION = "1.16.4";
 
-    private Logger log = LogManager.getLogger("LeangleCore");
-
-    private boolean isDev;
-
-    @Mod.Instance(MODID)
     private static Leangle INSTANCE;
 
+    private final Logger logger = LogManager.getLogger(Leangle.NAME);
+
     public Leangle() {
-        isDev = Boolean.parseBoolean(System.getProperty("leangle.development", "false"));
+        if (INSTANCE != null) {
+            throw new RuntimeException("Why did you do that? Naming blame!");
+        }
+
+        INSTANCE = this;
+
+        final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        bus.addListener(this::setup);
+        bus.addListener(this::clientSetup);
+        bus.addListener(this::serverSetup);
     }
 
-    @SidedProxy(clientSide = "cx.rain.mc.leanglecore.proxy.LeangleClient",
-            serverSide = "cx.rain.mc.leanglecore.proxy.LeangleCommon")
-    public static LeangleCommon proxy;
-
-    @SidedProxy(clientSide = "cx.rain.mc.leanglecore.test.LeangleTestClient",
-            serverSide = "cx.rain.mc.leanglecore.proxy.LeangleTest")
-    public static LeangleTest testProxy;
-
-    @Mod.EventHandler
-    public void onPreInit(FMLPreInitializationEvent event) {
-        proxy.onPreInit(event);
-
-        if (isDev()) {
-            testProxy.onPreInit(event);
-        }
+    private void setup(FMLCommonSetupEvent event) {
     }
 
-    @Mod.EventHandler
-    public void onInit(FMLInitializationEvent event) {
-        proxy.onInit(event);
-
-        if (isDev()) {
-            testProxy.onInit(event);
-        }
+    private void clientSetup(FMLClientSetupEvent event) {
     }
 
-    @Mod.EventHandler
-    public void onPostInit(FMLPostInitializationEvent event) {
-        proxy.onPostInit(event);
-
-        if (isDev()) {
-            testProxy.onPostInit(event);
-        }
-    }
-
-    @Mod.EventHandler
-    public void onServerStarting(FMLServerStartingEvent event) {
-        proxy.onServerStarting(event);
-
-        if (isDev()) {
-            testProxy.onServerStarting(event);
-        }
+    private void serverSetup(FMLDedicatedServerSetupEvent event) {
     }
 
     public static Leangle getInstance() {
@@ -79,10 +49,10 @@ public class Leangle {
     }
 
     public Logger getLogger() {
-        return log;
+        return logger;
     }
 
-    public boolean isDev() {
-        return isDev;
+    public static boolean isDev() {
+        return Boolean.parseBoolean(System.getProperty("leangle.development", "false"));
     }
 }

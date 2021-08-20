@@ -25,6 +25,8 @@ Open source under MIT license.
 ## Bug reports and feature request? / Bug报告和催更？
 
 [Issues](https://github.com/AmemiyaSigure/LeangleCore/issues)  
+
 [Discord](https://discord.gg/uxeMaaMyAC)
+
 QQ Group（QQ群）：950508038
 

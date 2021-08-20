@@ -1,6 +1,6 @@
 package cx.rain.mc.leanglecore.data.gen.provider.base;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 
 public interface IResourceLocationProvider {
     public String getModId();

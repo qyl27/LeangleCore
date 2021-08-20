@@ -3,13 +3,13 @@ package cx.rain.mc.leanglecore.data.gen.provider;
 import cx.rain.mc.leanglecore.data.gen.provider.base.IResourceLocationProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.SoundDefinitionsProvider;
 
-public abstract class SoundDataProvider extends SoundDefinitionsProvider implements IResourceLocationProvider {
+// Fixme: Forge 1.16 have no SoundDefinitionsProvider.
+public abstract class SoundDataProvider /*extends SoundDefinitionsProvider*/ implements IResourceLocationProvider {
     protected String id;
 
     public SoundDataProvider(DataGenerator generator, String modId, ExistingFileHelper helper) {
-        super(generator, modId, helper);
+//        super(generator, modId, helper);
         id = modId;
     }
 
@@ -18,7 +18,7 @@ public abstract class SoundDataProvider extends SoundDefinitionsProvider impleme
         return id;
     }
 
-    @Override
+//    @Override
     public String getName() {
         return "Sound Data Provider";
     }

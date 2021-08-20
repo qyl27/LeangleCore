@@ -20,7 +20,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 public class EntityFallingTile extends EntityFallingBlock implements IEntityAdditionalSpawnData {

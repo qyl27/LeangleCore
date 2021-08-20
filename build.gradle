@@ -20,7 +20,7 @@ apply plugin: 'forge'
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
-version = "1.7.10-1.0.0"
+version = "1.7.10-1.0.1"
 group= "cx.rain.mc.leanglecore" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "leanglecore"
 

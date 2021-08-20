@@ -2,6 +2,7 @@ package cx.rain.mc.leanglecore.tab;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class CustomCreativeTab extends CreativeTabs {
     private final Item item;
@@ -22,5 +23,10 @@ public class CustomCreativeTab extends CreativeTabs {
     @Override
     public Item getTabIconItem() {
         return item;
+    }
+
+    @Override
+    public ItemStack getIconItemStack() {
+        return new ItemStack(item);
     }
 }

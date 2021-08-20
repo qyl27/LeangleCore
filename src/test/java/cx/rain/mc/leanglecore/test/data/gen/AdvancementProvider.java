@@ -3,7 +3,7 @@ package cx.rain.mc.leanglecore.test.data.gen;
 import cx.rain.mc.leanglecore.Leangle;
 import cx.rain.mc.leanglecore.data.gen.provider.AdvancementDataProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.world.item.Items;
+import net.minecraft.item.Items;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class AdvancementProvider extends AdvancementDataProvider {

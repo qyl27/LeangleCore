@@ -1,0 +1,16 @@
+[
+{
+  "modid": "leanglecore",
+  "name": "Leangle Core Mod",
+  "description": "A mod shared code library of Qyl.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://github.com/AmemiyaSigure/LeangleCore",
+  "updateUrl": "",
+  "authorList": ["Qyl(AmemiyaSigure)"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

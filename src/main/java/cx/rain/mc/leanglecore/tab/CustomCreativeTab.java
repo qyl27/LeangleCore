@@ -4,16 +4,18 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class CustomCreativeTab extends CreativeTabs {
-    private final Item item;
+import java.util.function.Supplier;
 
-    public CustomCreativeTab(String label, Item itemIn) {
+public class CustomCreativeTab extends CreativeTabs {
+    private final Supplier<Item> item;
+
+    public CustomCreativeTab(String label, Supplier<Item> itemIn) {
         super(label);
 
         item = itemIn;
     }
 
-    public CustomCreativeTab(String label, Item itemIn, String background) {
+    public CustomCreativeTab(String label, Supplier<Item> itemIn, String background) {
         super(label);
 
         item = itemIn;
@@ -22,11 +24,11 @@ public class CustomCreativeTab extends CreativeTabs {
 
     @Override
     public Item getTabIconItem() {
-        return item;
+        return item.get();
     }
 
     @Override
     public ItemStack getIconItemStack() {
-        return new ItemStack(item);
+        return new ItemStack(item.get());
     }
 }

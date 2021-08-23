@@ -10,8 +10,8 @@ import net.minecraft.util.text.TextFormatting;
 public class LeangleCommand {
     public LeangleCommand(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("leangle").executes(context -> {
-            context.getSource().sendSuccess(new StringTextComponent("Leangle Core by Qyl.").withStyle(TextFormatting.AQUA), true);
-            context.getSource().sendSuccess(new StringTextComponent("Version: " + Leangle.VERSION).withStyle(TextFormatting.AQUA), true);
+            context.getSource().sendSuccess(new StringTextComponent("Leangle Core by Qyl.").withStyle(TextFormatting.AQUA), false);
+            context.getSource().sendSuccess(new StringTextComponent("Version: " + Leangle.VERSION).withStyle(TextFormatting.AQUA), false);
             return 1;
         }));
     }

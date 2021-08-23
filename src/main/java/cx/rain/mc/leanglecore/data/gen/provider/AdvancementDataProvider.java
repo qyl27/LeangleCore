@@ -4,19 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import cx.rain.mc.leanglecore.data.gen.provider.base.IResourceLocationProvider;
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public abstract class AdvancementDataProvider implements IDataProvider, IResourceLocationProvider {
+public abstract class AdvancementDataProvider implements DataProvider, IResourceLocationProvider {
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
     protected static final Logger LOGGER = LogManager.getLogger();
 
@@ -51,14 +51,14 @@ public abstract class AdvancementDataProvider implements IDataProvider, IResourc
     }
 
     @Override
-    public void run(DirectoryCache cache) throws IOException {
+    public void run(HashCache cache) throws IOException {
         registerAdvancements();
 
         Path output = gen.getOutputFolder();
         advancements.forEach((key, advancement) -> {
             Path path = createPath(output, key);
             try {
-                IDataProvider.save(GSON, cache, advancement.serializeToJson(), path);
+                DataProvider.save(GSON, cache, advancement.serializeToJson(), path);
             } catch (IOException ex) {
                 LOGGER.error("Could not write advancements {}", path, ex);
             }
@@ -80,42 +80,42 @@ public abstract class AdvancementDataProvider implements IDataProvider, IResourc
         return advancement.build(id);
     }
 
-    protected DisplayInfo display(IItemProvider icon, String title, String description) {
+    protected DisplayInfo display(ItemLike icon, String title, String description) {
         return display(icon, title, description, null, FrameType.TASK);
     }
 
-    protected DisplayInfo display(IItemProvider icon, String title, String description, FrameType frame) {
+    protected DisplayInfo display(ItemLike icon, String title, String description, FrameType frame) {
         return display(icon, title, description, null, frame);
     }
 
-    protected DisplayInfo display(IItemProvider icon, String title, String description,
+    protected DisplayInfo display(ItemLike icon, String title, String description,
                                   ResourceLocation background) {
         return display(icon, title, description, background, FrameType.TASK, true);
     }
 
 
-    protected DisplayInfo display(IItemProvider icon, String title, String description,
+    protected DisplayInfo display(ItemLike icon, String title, String description,
                                   ResourceLocation background, FrameType frame) {
         return display(icon, title, description, background, frame, true);
     }
 
-    protected DisplayInfo display(IItemProvider icon, String title, String description,
+    protected DisplayInfo display(ItemLike icon, String title, String description,
                                   ResourceLocation background, FrameType frame,
                                   boolean showToast) {
         return display(icon, title, description, background, frame, true, true);
     }
 
-    protected DisplayInfo display(IItemProvider icon, String title, String description,
+    protected DisplayInfo display(ItemLike icon, String title, String description,
                                   ResourceLocation background, FrameType frame,
                                   boolean showToast, boolean announceToChat) {
         return display(icon, title, description, background, frame, true, true, false);
     }
 
-    protected DisplayInfo display(IItemProvider icon, String title, String description,
+    protected DisplayInfo display(ItemLike icon, String title, String description,
                                   ResourceLocation background, FrameType frame,
                                   boolean showToast, boolean announceToChat, boolean hidden) {
-        return new DisplayInfo(new ItemStack(icon), new TranslationTextComponent(title),
-                new TranslationTextComponent(description), background, frame, showToast, announceToChat, hidden);
+        return new DisplayInfo(new ItemStack(icon), new TranslatableComponent(title),
+                new TranslatableComponent(description), background, frame, showToast, announceToChat, hidden);
     }
 
     protected Advancement.Builder root(DisplayInfo display) {
@@ -127,7 +127,7 @@ public abstract class AdvancementDataProvider implements IDataProvider, IResourc
                                        Criterion criterions) {
         Map<String, Criterion> map = new HashMap<>();
         map.put(criterionName, criterions);
-        return root(display, map, IRequirementsStrategy.AND);
+        return root(display, map, RequirementsStrategy.AND);
     }
 
     protected Advancement.Builder root(DisplayInfo display,
@@ -137,12 +137,12 @@ public abstract class AdvancementDataProvider implements IDataProvider, IResourc
 
     protected Advancement.Builder root(DisplayInfo display,
                                        Map<String, Criterion> criterions,
-                                       IRequirementsStrategy requirements) {
+                                       RequirementsStrategy requirements) {
         return root(display, criterions, requirements, null);
     }
     protected Advancement.Builder root(DisplayInfo display,
                                        Map<String, Criterion> criterions,
-                                       IRequirementsStrategy requirements,
+                                       RequirementsStrategy requirements,
                                        AdvancementRewards.Builder rewards) {
         return advancement(display, null, criterions, requirements, rewards);
     }
@@ -168,7 +168,7 @@ public abstract class AdvancementDataProvider implements IDataProvider, IResourc
     protected Advancement.Builder child(DisplayInfo display,
                                         Advancement parent,
                                         Map<String, Criterion> criterions,
-                                        IRequirementsStrategy requirements) {
+                                        RequirementsStrategy requirements) {
         return child(display, parent, criterions, requirements, null);
     }
 
@@ -183,7 +183,7 @@ public abstract class AdvancementDataProvider implements IDataProvider, IResourc
     protected Advancement.Builder child(DisplayInfo display,
                                         Advancement parent,
                                         Map<String, Criterion> criterions,
-                                        IRequirementsStrategy requirements,
+                                        RequirementsStrategy requirements,
                                         AdvancementRewards.Builder rewards) {
         return advancement(display, parent, criterions, requirements, rewards);
     }
@@ -195,12 +195,12 @@ public abstract class AdvancementDataProvider implements IDataProvider, IResourc
         Map<String, Criterion> map = new HashMap<>();
         map.put(criterionName, criterions);
 
-        return advancement(display, parent, map, IRequirementsStrategy.AND, rewards);
+        return advancement(display, parent, map, RequirementsStrategy.AND, rewards);
     }
 
     protected Advancement.Builder advancement(DisplayInfo display, Advancement parent,
                                               Map<String, Criterion> criterions,
-                                              IRequirementsStrategy requirements,
+                                              RequirementsStrategy requirements,
                                               AdvancementRewards.Builder rewards) {
         Advancement.Builder builder = Advancement.Builder.advancement().display(display);
 
@@ -224,35 +224,35 @@ public abstract class AdvancementDataProvider implements IDataProvider, IResourc
         return builder;
     }
 
-    protected Criterion hasItem(IItemProvider item) {
+    protected Criterion hasItem(ItemLike item) {
         return new Criterion(triggerWithItem(item));
     }
 
-    protected Criterion hasItem(ITag<Item> item) {
+    protected Criterion hasItem(Tag<Item> item) {
         return new Criterion(triggerWithItem(item));
     }
 
-    protected ItemPredicate predicate(IItemProvider itemIn) {
+    protected ItemPredicate predicate(ItemLike itemIn) {
         return ItemPredicate.Builder.item().of(itemIn).build();
     }
 
-    protected ItemPredicate predicate(ITag<Item> ITagIn) {
+    protected ItemPredicate predicate(Tag<Item> ITagIn) {
         return ItemPredicate.Builder.item().of(ITagIn).build();
     }
 
-    protected InventoryChangeTrigger.Instance triggerWithItem(IItemProvider itemIn) {
+    protected InventoryChangeTrigger.TriggerInstance triggerWithItem(ItemLike itemIn) {
         return triggerWithItems(ItemPredicate.Builder.item().of(itemIn).build());
     }
 
-    protected InventoryChangeTrigger.Instance triggerWithItem(ITag<Item> ITagIn) {
+    protected InventoryChangeTrigger.TriggerInstance triggerWithItem(Tag<Item> ITagIn) {
         return triggerWithItems(ItemPredicate.Builder.item().of(ITagIn).build());
     }
 
-    protected InventoryChangeTrigger.Instance triggerWithItems(ItemPredicate... predicates) {
-        return new InventoryChangeTrigger.Instance(
-                EntityPredicate.AndPredicate.ANY,
-                MinMaxBounds.IntBound.ANY, MinMaxBounds.IntBound.ANY,
-                MinMaxBounds.IntBound.ANY, predicates);
+    protected InventoryChangeTrigger.TriggerInstance triggerWithItems(ItemPredicate... predicates) {
+        return new InventoryChangeTrigger.TriggerInstance(
+                EntityPredicate.Composite.ANY,
+                MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY,
+                MinMaxBounds.Ints.ANY, predicates);
     }
 
     protected AdvancementRewards.Builder rewardExp(int exp) {

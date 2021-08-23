@@ -1,6 +1,5 @@
 package cx.rain.mc.leanglecore;
 
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -14,8 +13,8 @@ import org.apache.logging.log4j.Logger;
 public class Leangle {
     public static final String MODID = "leanglecore";
     public static final String NAME = "Leangle Core";
-    public static final String VERSION = "1.16.4-1.0.0";
-    public static final String MC_VERSION = "1.16.4";
+    public static final String VERSION = "1.17.1-1.0.0";
+    public static final String MC_VERSION = "1.17.1";
 
     private static Leangle INSTANCE;
 
